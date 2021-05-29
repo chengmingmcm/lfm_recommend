@@ -246,12 +246,6 @@ class LFM:
         print('save model successfully...')
 
     def load(self):
-        """
-        加载本地模型
-        将self.p对象和self.q对象从model_path中读取
-        :return:
-        """
-
         f = open(model_path, 'rb')
         self.p, self.q = pickle.load(f)
         # print(type(self.p))

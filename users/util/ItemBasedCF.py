@@ -79,7 +79,6 @@ class ItemBasedCF(object):
 
         # count co-rated users between items
         itemsim_mat = self.movie_sim_mat
-        # print('building co-rated users matrix...', file=sys.stderr)
 
         for user, movies in self.trainset.items():
             for m1 in movies:
