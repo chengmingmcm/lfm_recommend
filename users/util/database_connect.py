@@ -16,6 +16,7 @@ sys.path.append(r'../forms.py')
 from users.models import Resulttable, Insertposter
 
 
+
 # 向数据库中插入评分数据
 def insert(request):
     global USERID

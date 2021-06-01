@@ -68,6 +68,7 @@ def showmessage(request):
 
 
 def recommend1(request):
+    global conn
     USERID = int(request.GET.get("userIdd")) + 1000
     read_mysql_to_csv('users/static/users_resulttable.csv', USERID)  # 追加数据，提高速率
     ratingfile = os.path.join('users/static', 'users_resulttable.csv')
@@ -101,8 +102,8 @@ def recommend1(request):
         print("LFM训练结束")
         mae, rmse = lfm.validate()
         print('平均绝对误差:', mae, '线性回归的损失函数：', rmse)  # rmse:均方根误差 mae:平均绝对误差
-    pre, rec, matrix2 = lfm.evaluate(USERID)
-    print('准确率:', pre*10, '召回率:', rec)
+        pre, rec, matrix2 = lfm.evaluate(USERID)
+        print('准确率:', pre*10, '召回率:', rec)
     # Precision 就是检索出来的条目中（比如：文档、网页等）有多少是准确的，Recall就是所有准确的条目有多少被检索出来了。
 
     matrix1 = matrix + matrix2
@@ -172,14 +173,14 @@ def recommend1(request):
 
 
 #
-if __name__ == '__main__':
-    ratingfile2 = os.path.join('static', 'users_resulttable.csv')  # 一共671个用户
-
-    usercf = UserBasedCF()
-    userId = '1'
-    # usercf.initial_dataset(ratingfile1)
-    usercf.generate_dataset(ratingfile2)
-    usercf.calc_user_sim()
-    # usercf.evaluate()
-    usercf.recommend(userId)
-    # 给用户推荐10部电影  输出的是‘movieId’,兴趣度
+# if __name__ == '__main__':
+#     ratingfile2 = os.path.join('static', 'users_resulttable.csv')  # 一共671个用户
+#
+#     usercf = UserBasedCF()
+#     userId = '1'
+#     # usercf.initial_dataset(ratingfile1)
+#     usercf.generate_dataset(ratingfile2)
+#     usercf.calc_user_sim()
+#     # usercf.evaluate()
+#     usercf.recommend(userId)
+#     # 给用户推荐10部电影  输出的是‘movieId’,兴趣度

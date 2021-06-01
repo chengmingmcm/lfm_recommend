@@ -151,7 +151,7 @@ class LFM:
         user_item_ids = set(self.train_data[self.train_data['user'] == user_id]['item'])
         other_item_ids = self.item_ids ^ user_item_ids  # 求差集，去除用户已选过的item
         interest_list = [self._predict(user_id, item_id) for item_id in other_item_ids]
-        result_list = sorted(zip(list(other_item_ids), interest_list), key=lambda x: x[1], reverse=True)  # 结果根据评分排序
+        result_list = sorted(zip(list(other_item_ids), interest_list), key=lambda x: x[1], reverse=False)  # 结果根据评分排序
         if N:
             return result_list[:N]
         else:
@@ -261,16 +261,23 @@ if __name__ == '__main__':
     mae_rmse = []
     pre_rec = []
 
-    if (os.path.exists(model_path)):
-        lfm = LFM(train_size=0.8, ratio=1)
-        lfm.load()
-    else:
-        lfm = LFM(train_size=0.8, ratio=1)
-        lfm.train()
-        print("train over...")
-        mae, rmse = lfm.validate()
-        print('MAE:', mae, 'RMSE', rmse)    # rmse:均方根误差 mae:平均绝对误差
-        mae_rmse.append((mae, rmse))
+    # if False:
+    #     lfm = LFM(train_size=0.8, ratio=1)
+    #     lfm.load()
+    # else:
+    #     lfm = LFM(train_size=0.8, ratio=1)
+    #     lfm.train()
+    #     print("train over...")
+    #     mae, rmse = lfm.validate()
+    #     print('MAE:', mae, 'RMSE', rmse)    # rmse:均方根误差 mae:平均绝对误差
+    #     mae_rmse.append((mae, rmse))
+
+    lfm = LFM(train_size=0.8, ratio=1)
+    lfm.train()
+    print("train over...")
+    mae, rmse = lfm.validate()
+    print('MAE:', mae, 'RMSE', rmse)  # rmse:均方根误差 mae:平均绝对误差
+    mae_rmse.append((mae, rmse))
     pre, rec = lfm.evaluate(1003)
     print('precision:', pre, 'recall:', rec)    # pre:精确度 rec
     # Precision 就是检索出来的条目中（比如：文档、网页等）有多少是准确的，Recall就是所有准确的条目有多少被检索出来了。
