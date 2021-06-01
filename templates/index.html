@@ -1530,16 +1530,27 @@
 
 </div>
 
+    <div >
 
         <form action="users/recommend1/" method="get">
             {% csrf_token %}
 {#            姓名：<input type="text" name="name">#}
 {#            <hr/>#}
             <input type="hidden" name="userIdd" id = "userId2">
-            <input type="submit" name = "viewResult" class="view" id = "recommend1" value="查看推荐">
+            <input type="submit" name = "viewResult" class="view" id = "recommend1" value="查看协同过滤算法的推荐">
 
         </form>
-<iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
+
+        <form action="users/recommend2/" method="get">
+            {% csrf_token %}
+{#            姓名：<input type="text" name="name">#}
+{#            <hr/>#}
+            <input type="hidden" name="userIdd" id = "userId2">
+            <input type="submit" name = "viewResult" class="view" id = "recommend1" value="查看lfm算法的推荐">
+
+        </form>
+    </div>
+    <iframe id="id_iframe" name="nm_iframe" style="display:none;"></iframe>
 <br/>
 <br/>
 {#        <form action="users/recommend2/" method="get">#}

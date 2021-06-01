@@ -45,11 +45,11 @@ def check(request):
 def showmessage(request):
     usermovieid = []
     usermovietitle = []
-    userid = request.GET.get('userIdd')
+    userid = 1003
     # 查询数据库中的数据userID = 1001
-    data = Resulttable.objects.filter(uersId=userid)
+    data = Resulttable.objects.filter(userId=userid).values('imdbId')
     for row in data:
-        usermovieid.append(row.imdbId)
+        usermovieid.append(row.get('imdbId'))
 
     try:
         conn = get_conn()
@@ -57,6 +57,8 @@ def showmessage(request):
         for i in usermovieid:
             cur.execute('select * from moviegenre3 where imdbId = %s', i)
             rr = cur.fetchall()
+
+            print(rr)
             for imdbId, title, poster in rr:
                 usermovietitle.append(title)
                 print(title)
@@ -102,8 +104,8 @@ def recommend1(request):
         print("LFM训练结束")
         mae, rmse = lfm.validate()
         print('平均绝对误差:', mae, '线性回归的损失函数：', rmse)  # rmse:均方根误差 mae:平均绝对误差
-        pre, rec, matrix2 = lfm.evaluate(USERID)
-        print('准确率:', pre*10, '召回率:', rec)
+    pre, rec, matrix2 = lfm.evaluate(USERID)
+    print('准确率:', pre*10, '召回率:', rec)
     # Precision 就是检索出来的条目中（比如：文档、网页等）有多少是准确的，Recall就是所有准确的条目有多少被检索出来了。
 
     matrix1 = matrix + matrix2
@@ -127,6 +129,47 @@ def recommend1(request):
     results = Insertposter.objects.filter(userId=USERID)
     return render(request, 'users/movieRecommend.html', locals())
     # return render(request, 'users/..//index.html', locals())
+
+def recommend2(request):
+    global conn
+    USERID = 1003
+
+    userid = str(USERID)  # 得到了当前用户的id 1001
+
+
+    # 使用lfm算法
+    print("开始lfm算法")
+    lfm = LFM(train_size=0.8, ratio=1)
+    if (os.path.exists(model_path)):
+        lfm.load()
+    else:
+        lfm.train()
+        print("LFM训练结束")
+        mae, rmse = lfm.validate()
+        print('平均绝对误差:', mae, '线性回归的损失函数：', rmse)  # rmse:均方根误差 mae:平均绝对误差
+    pre, rec, matrix2 = lfm.evaluate(USERID)
+    print('准确率:', pre*10, '召回率:', rec)
+    # Precision 就是检索出来的条目中（比如：文档、网页等）有多少是准确的，Recall就是所有准确的条目有多少被检索出来了。
+    try:
+        conn = get_conn()
+        cur = conn.cursor()
+        Insertposter.objects.filter(userId=USERID).delete()  # 清空insertposter库，防止以前的数据产生影响
+        for i in matrix2:  # 遍历推荐结果矩阵
+            cur.execute('select * from moviegenre3 where imdbId = %s', i)
+            rr = cur.fetchall()
+            for imdbId, title, poster in rr:
+                if (Insertposter.objects.filter(title=title)):
+                    continue
+                else:
+                    Insertposter.objects.create(userId=USERID, title=title, poster=poster)
+
+        # print(poster_result)
+    finally:
+        conn.close()
+    results = Insertposter.objects.filter(userId=USERID)
+    return render(request, 'users/movieRecommend.html', locals())
+
+
 
 
 # 用于展示推荐数据，调用计算函数
