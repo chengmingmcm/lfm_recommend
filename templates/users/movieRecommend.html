@@ -51,13 +51,7 @@
 
 </div>
 
-
-        <form action="users/recommend1/recommend2/" method="get">
-            {% csrf_token %}
-            <input type="hidden" name="userIddd" id = "userId3">
-            <input type="submit" name = "viewResult" class="view"  id = "recommend2" value="查看推荐结果">
-        </form>
-
+    <a href="{% url 'index' %}"><button style="height: 25px;align-content: center;margin-left: 650px" >返回主页</button></a>
 
 </body>
 </html>

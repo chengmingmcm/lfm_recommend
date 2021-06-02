@@ -55,10 +55,10 @@ def showmessage(request):
         conn = get_conn()
         cur = conn.cursor()
         for i in usermovieid:
+            print(i)
             cur.execute('select * from moviegenre3 where imdbId = %s', i)
             rr = cur.fetchall()
 
-            print(rr)
             for imdbId, title, poster in rr:
                 usermovietitle.append(title)
                 print(title)

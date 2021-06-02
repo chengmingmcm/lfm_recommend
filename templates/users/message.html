@@ -18,7 +18,7 @@
     </style>
 </head>
 
-<body>
+
 <h2>您评价过下列电影：</h2>
 <br/>
 {% for dd in usermovietitle %}
@@ -29,7 +29,7 @@
 {%  endfor %}
 
 
-
+<a href="{% url 'index' %}"><button style="height: 25px;align-content: center;margin-left: 650px" >返回主页</button></a>
 
 </body>
 </html>
